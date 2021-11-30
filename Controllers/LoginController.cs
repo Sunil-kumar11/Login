@@ -9,30 +9,56 @@ using System.Threading.Tasks;
 namespace Login.Controllers
 {
 
-    
+
     public class LoginController : Controller
     {
-        
+        static List<Student> Students = new List<Student>();
+
 
         public IActionResult Index()
         {
-            var std = PutValues();
-            return View(std);
+            return View(Students);
         }
         public IActionResult Login()
         {
             return View();
         }
+        public IActionResult Delete(int id)
+        {
+
+            var stdD = Students.Where(s => s.Id == id).FirstOrDefault();
+            
+            return View(stdD);
+        }
+        [HttpPost]
+        public ActionResult Delete(Student stdD)
+        {
+            var student = Students.Where(s => s.Id == stdD.Id).FirstOrDefault();
+            Students.Remove(student);
+            return View("Index");
+        }
+
         public IActionResult Create()
         {
             return View();
         }
+
+        public IActionResult Edit(int Id)
+        {
+            var std = Students.Where(s => s.Id == Id).FirstOrDefault();
+
+
+            return View(std);
+        }
+
+
+
         [HttpPost]
         public IActionResult Create(Student student)
         {
-            int num = PutValues().Count;
-            PutValues().Add(student);
-            if (PutValues().Count != num)
+            int num = Students.Count;
+            Students.Add(student);
+            if (Students.Count > num)
             {
                 ViewBag.message = "student details added successfully";
 
@@ -45,51 +71,39 @@ namespace Login.Controllers
                 return View("Create");
             }
         }
-        public ActionResult Edit(int Id)
+        [HttpPost]
+        //[Route("api/[controller]/{action}/{Id}")]
+        public ActionResult Edit(Student std)
         {
-            var students = PutValues();
-            var std = students.Where(s => s.Id == Id).FirstOrDefault();
 
-            return View(std);
+            //var username = student.UserName;
+            //var password = student.Password;
+            //var std = student;
+
+            //return View("Index");
+
+
+            var student = Students.Where(s => s.Id == std.Id).FirstOrDefault();
+            Students.Remove(student);
+            Students.Add(std);
+
+            return RedirectToAction("Index");
+            //if (std != null)
+            //{
+            //    Students.Add(std);
+            //    ViewBag.message = "User details added";
+            //    return View("Index");
+
+            //}
+            //else
+            //{
+            //    ViewBag.message1 = "UserName Or Password is Wrong please enter correct UserName And Password";
+            //    return View("Create");
+            //}
         }
         public List<Student> PutValues()
         {
             
-        
-            
-            List<Student> Students =new List<Student> { 
-            new Student
-            {
-                Id=121,
-                UserName = "Raju",
-                Password = "Raju@123"
-            },
-            new Student
-            {
-                Id=124,
-                UserName = "raju",
-                Password = "Raju@456"
-            },
-            new Student
-            {
-                Id=122,
-                UserName = "suresh",
-                Password = "suresh@123"
-            },
-            new Student
-            {
-                Id=123,
-                UserName = "vikas",
-                Password = "vikas@123"
-            },
-            new Student
-            {
-                Id=124,
-                UserName = "mahesh",
-                Password = "mahesh@123"
-            }
-          };
-
             return Students;
         }
 
@@ -98,7 +112,7 @@ namespace Login.Controllers
         public IActionResult Login(Student student)
         {
 
-           
+
 
             var Students = PutValues();
 
@@ -145,6 +159,21 @@ namespace Login.Controllers
             //}
             //public IActionResult PostStudents(Student student)
             //{
-        }
+
+            //[HttpDelete("{id}")]
+
+            //public ActionResult Delete(int id)
+            //{
+            //    Student friend = Students.Find(f => f.Id == id);
+            //    Students.Remove(friend);
+            //    return View("Index");
+            //}
+
+
+
+
+        }   
+
     }
+    
 }
